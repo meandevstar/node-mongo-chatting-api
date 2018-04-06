@@ -10,18 +10,19 @@ module.exports = function (app) {
   const io = require('socket.io')(server);
   server.listen(Config.app.socketPort);
 
-  console.log(`========== Socket Server opened at  at port ${Config.app.socketPort} ==========`);
+  console.log(`========== Socket Server opened at port ${Config.app.socketPort} ==========`);
 
   io.on('connection', client => {
     console.log('========== Socket Server connected ==========');
-    client.on('message', recieveMessageHandler);
+    client.on('messages', recieveMessageHandler);
     client.on('disconnect', disconnectHandler);
   });
 
   const recieveMessageHandler = (data) => {
-    console.log('Message reveiced: ', data);
+    console.log('========== Message reveiced ==========');
+    console.log(`Channel: ${data.room}\nSender: ${data.sender}\nText: ${data.text}`);
     saveMessage(data)
-      .then(result => io.emit('message.new', result))
+      .then(result => io.emit('messages.new', result))
       .catch(err => console.log(err));
   }
 

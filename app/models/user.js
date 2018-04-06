@@ -5,7 +5,10 @@ var timestamps = require('mongoose-timestamp');
 const userSchema = mongoose.Schema({
 	name : String,
 	email: String,
-	password: String
+	password: String,
+	workspace: { type: mongoose.Schema.Types.ObjectId, ref: 'workspace' },
+	profileImageUrl: String,
+
 });
 
 userSchema.plugin(timestamps);
