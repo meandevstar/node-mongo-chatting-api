@@ -9,7 +9,8 @@ const passwordRegx = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*(_|[^\w])).+$/;
 const userRegisterSchema = {
 	name: Joi.string(),
 	password: Joi.string().regex(passwordRegx).required(),
-	email: Joi.string().email().required()
+	email: Joi.string().email().required(),
+	workspace: Joi.string().required()
 };
 
 const userAuthenticateSchema = {
@@ -31,7 +32,8 @@ module.exports = (app) => {
 		const payload = req.body;
 		const cred = {
 			email: payload.email,
-			password: payload.password
+			password: payload.password,
+			workspace: payload.workspace
 		};
 
 		UserModule.registerUser(payload)
