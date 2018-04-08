@@ -15,6 +15,8 @@ module.exports = function (app) {
   io.on('connection', client => {
     console.log('========== Socket Server connected ==========');
     client.on('messages', recieveMessageHandler);
+    client.on('users.logout', (data) => {console.log('====> Socket logout data: ', data)});
+    client.on('users.login', (data) => {console.log('====> Socket login data: ', data)});
     client.on('disconnect', disconnectHandler);
   });
 

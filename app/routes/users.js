@@ -9,7 +9,8 @@ const passwordRegx = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*(_|[^\w])).+$/;
 const userRegisterSchema = {
 	name: Joi.string(),
 	password: Joi.string().regex(passwordRegx).required(),
-	email: Joi.string().email().required()
+	email: Joi.string().email().required(),
+	workspace: Joi.string().required()
 };
 
 const userAuthenticateSchema = {
@@ -17,6 +18,10 @@ const userAuthenticateSchema = {
 	password: Joi.string().regex(passwordRegx).required(),
 	workspace: Joi.string().required()
 };
+
+const findWorkspaceSchema = {
+	email: Joi.string().email().required()
+}
 
 
 module.exports = (app) => {
@@ -31,7 +36,8 @@ module.exports = (app) => {
 		const payload = req.body;
 		const cred = {
 			email: payload.email,
-			password: payload.password
+			password: payload.password,
+			workspace: payload.workspace
 		};
 
 		UserModule.registerUser(payload)
@@ -48,5 +54,13 @@ module.exports = (app) => {
 			.then(result => res.status(200).json(result))
 			.catch(err => next(err));
 	});
+
+	app.get('/v1/user/workspaces', (req, res, next) => {
+		const email = req.query.email;
+
+		UserModule.getUserWorkspaces(email)
+			.then(result => res.status(200).json(result))
+			.catch(err => next(err))
+	})
 
 };

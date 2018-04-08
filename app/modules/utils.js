@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const nodemailer = require('nodemailer');
 const config = require('../../config');
 
 
@@ -27,6 +28,37 @@ const verifyToken = (accessToken) => {
     });
   });
 };
+
+
+const sendEmail = (toEmails, subject, text) => {
+  return new Promise((resolve, reject) => {
+
+    let transporter = nodemailer.createTransport({
+      host: 'smtp.yandex.com',
+      port: 587,
+      secure: false,
+      auth: {
+          user: process.env.SYSTEM_EMAIL,
+          pass: process.env.SYSTEM_EMAIL_PASS
+      }
+    })
+
+    let mailOptions = {
+      from: process.env.SYSTEM_EMAIL,
+      to: toEmails,
+      subject: subject,
+      text: text
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve();
+      }          
+    });
+  });
+}
 
 const errorMaker = (type, message, customName) => {
   let error = new Error(message);
@@ -75,5 +107,6 @@ const errorMaker = (type, message, customName) => {
 module.exports = {
   errorMaker: errorMaker,
   issueToken: issueToken,
-  verifyToken: verifyToken
+  verifyToken: verifyToken,
+  sendEmail: sendEmail
 };

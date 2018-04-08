@@ -6,7 +6,7 @@ const userSchema = mongoose.Schema({
 	name : String,
 	email: String,
 	password: String,
-	workspace: { type: mongoose.Schema.Types.ObjectId, ref: 'workspace' },
+	workspace: { type: mongoose.Schema.Types.ObjectId, ref: 'workspaces' },
 	profileImageUrl: String,
 
 });

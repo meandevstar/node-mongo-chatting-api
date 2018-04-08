@@ -15,6 +15,7 @@
     "method-override": "^2.0.2",
     "mongoose": "~4.4",
     "mongoose-timestamp": "^0.6.0",
+    "nodemailer": "^4.6.4",
     "socket.io": "^2.1.0"
   },
   "devDependencies": {

@@ -8,5 +8,7 @@ export DB_PORT=21609
 export DB_NAME=react-auth
 export DB_USER=akira
 export DB_PASS=TGRvHYwzPVj8NSJT
+export SYSTEM_EMAIL=bigsilversstar@yandex.com
+export SYSTEM_EMAIL_PASS=big1992
 
 npm start

@@ -2,7 +2,7 @@ const hash = require('md5');
 const { omit } = require('lodash');
 
 const { User, Workspace } = require('../models');
-const { errorMaker, issueToken } = require('./utils');
+const { errorMaker, issueToken, sendEmail } = require('./utils');
 
 
 const unAllowedUserFields = [
@@ -77,8 +77,33 @@ const authenticateUser = (payload) => {
     });
 };
 
+const getUserWorkspaces = (email) => {
+  console.log(email)
+  return User.find({ email: email }).populate('workspace')
+    .then(docs => {
+      console.log(docs)
+      return docs.filter(doc => !!doc.workspace)
+        .map(doc => doc.workspace.name);
+    })
+    .then(workspaceNames => {
+      const subject = 'Your Workspaces';
+      let text = 'You have no workspace'
+      if (workspaceNames.length) {
+        text = 'Your workspaces are ' + workspaceNames.join(', ');
+      }
+
+      console.log(workspaceNames, text)
+
+      return sendEmail(email, subject, text)
+        .then(() => {
+          console.log(`Workspace find email sent to ${email}: ${text}`);
+        });
+    });
+}
+
 module.exports = {
   registerUser: registerUser,
   getUsers: getUsers,
-  authenticateUser: authenticateUser
+  authenticateUser: authenticateUser,
+  getUserWorkspaces: getUserWorkspaces
 };

@@ -4,7 +4,7 @@ var timestamps = require('mongoose-timestamp');
 
 const roomSchema = mongoose.Schema({
   participants: [{ type: mongoose.Schema.Types.ObjectId, ref: 'users' }],
-  title: String,
+  name: String,
 });
 
 roomSchema.plugin(timestamps);
