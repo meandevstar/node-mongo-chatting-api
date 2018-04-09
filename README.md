@@ -8,3 +8,6 @@ $ npm install
 $ cd scripts/
 $ sh start.sh
 ```
+
+
+Note: Front end is implemented here - https://github.com/meandevstar/react-chatting-app
