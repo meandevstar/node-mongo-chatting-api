@@ -10,16 +10,16 @@ const unAllowedUserFields = [
 ];
 
 const registerUser = (payload) => {
-  return Workspace.find({ name: payload.workspace })
+  // return Workspace.find({ name: payload.workspace })
 
-    .then(docs => {
-      if (!docs.length) {
-        return Promise.reject(errorMaker('BAD_REQUEST', 'Workspace does not exists'));
-      } else {
-        payload.workspace = docs[0]._id;
-        return User.count({ email: payload.email, workspace: payload.workspace });
-      }
-    })
+  //   .then(docs => {
+  //     if (!docs.length) {
+  //       return Promise.reject(errorMaker('BAD_REQUEST', 'Workspace does not exists'));
+  //     } else {
+  //       payload.workspace = docs[0]._id;
+        return User.count({ email: payload.email/*, workspace: payload.workspace */})
+    //   }
+    // })
 
     .then(count => {
       if (count > 0) {
@@ -44,15 +44,15 @@ const getUsers = (workspaceId) => {
 
 const authenticateUser = (payload) => {
   console.log(payload)
-  return Workspace.find({ name: payload.workspace })
+  // return Workspace.find({ name: payload.workspace })
 
-    .then(docs => {
-      if (!docs.length) {
-        return Promise.reject(errorMaker('BAD_REQUEST', 'Workspace does not exists'));
-      } else {
-        return User.find({ email: payload.email, workspace: docs[0]._id })
-      }
-    })
+  //   .then(docs => {
+  //     if (!docs.length) {
+  //       return Promise.reject(errorMaker('BAD_REQUEST', 'Workspace does not exists'));
+  //     } else {
+        return User.find({ email: payload.email/*, workspace: docs[0]._id */})
+    //   }
+    // })
 
     .then(docs => {
       if (!docs.length) {
@@ -101,9 +101,36 @@ const getUserWorkspaces = (email) => {
     });
 }
 
+const updateUser = (payload) => {
+  console.log('', payload)
+  return User.findOne({ _id: payload.id })
+    .then(doc => {
+      if (!doc) {
+        return Promise.reject(errorMaker('UNPROCESSABLE_ENTITY', 'User does not exists'));
+      }
+
+      let updatePayload = omit(payload, ['id','password', 'oldPass']);
+
+      if (payload.password && payload.oldPass) {
+        if (doc.password === hash(payload.oldPass)) {
+          const encrypted = hash(payload.password);
+          updatePayload = Object.assign(updatePayload, { password: encrypted });
+        } else {
+          return Promise.reject(errorMaker('BAD_REQUEST', 'Old Password is incorrect'))
+        }
+      }
+
+      Object.keys(updatePayload).forEach(key => {
+        doc[key] = updatePayload[key];
+      });
+      return doc.save().then(result => result.toObject());
+    });
+}
+
 module.exports = {
   registerUser: registerUser,
   getUsers: getUsers,
+  updateUser: updateUser,
   authenticateUser: authenticateUser,
   getUserWorkspaces: getUserWorkspaces
 };

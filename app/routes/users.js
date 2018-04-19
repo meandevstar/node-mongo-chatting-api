@@ -5,18 +5,17 @@ const { validate, isAuthenticated } = require('../middleware');
 
 
 
-const passwordRegx = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*(_|[^\w])).+$/;
 const userRegisterSchema = {
 	name: Joi.string(),
-	password: Joi.string().regex(passwordRegx).required(),
+	password: Joi.string().required(),
 	email: Joi.string().email().required(),
-	workspace: Joi.string().required()
+	// workspace: Joi.string().required()
 };
 
 const userAuthenticateSchema = {
 	email: Joi.string().email().required(),
-	password: Joi.string().regex(passwordRegx).required(),
-	workspace: Joi.string().required()
+	password: Joi.string().required(),
+	workspace: Joi.string()
 };
 
 const findWorkspaceSchema = {
@@ -46,6 +45,14 @@ module.exports = (app) => {
 			.catch(err => next(err));
 	});
 
+	app.put('/v1/users', isAuthenticated, (req, res, next) => {
+		const payload = Object.assign(req.body, { id : req.token.id });
+
+		UserModule.updateUser(payload)
+			.then(result => res.status(200).json(result))
+			.catch(err => next(err))
+	});
+
 	app.post('/v1/user/authenticate', validate(userAuthenticateSchema), (req, res, next) => {
 
 		const payload = req.body;
@@ -61,6 +68,6 @@ module.exports = (app) => {
 		UserModule.getUserWorkspaces(email)
 			.then(result => res.status(200).json(result))
 			.catch(err => next(err))
-	})
+	});
 
 };

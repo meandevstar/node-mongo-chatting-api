@@ -32,5 +32,4 @@ module.exports = function (app) {
     console.log('============ Socket server disconnected ============')
   }
 
-  
 }
