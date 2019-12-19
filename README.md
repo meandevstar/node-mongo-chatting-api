@@ -10,4 +10,4 @@ $ sh start.sh
 ```
 
 
-Note: Front end is implemented here - https://github.com/meandevstar/react-chatting-app
+Note: Front end is implemented here - https://github.com/imfsdev/react-chatting-app
